@@ -1,23 +1,23 @@
 ---
-title: 'Get Loads'
+title: 'Get Loads List'
 openapi: 'GET /orders'
 ---
 
 ## API Url
 
 ```json
-https://{company_name}.datatruck.io/api/v1/openapi/orders
+https://{company_name}.datatruck.io/api/v1/openapi/orders/
 ```
 Here, please put your company name in the url. Ex: if it is CompanyX company, then url should be 
 ```json
-https://companyx.datatruck.io/api/v1/openapi/orders
+https://companyx.datatruck.io/api/v1/openapi/orders/
 ```
 
 ## Sample request
 
 ```json
 curl --request GET \
---url https://{company_name}.datatruck.io/api/v1/openapi/orders \
+--url https://{company_name}.datatruck.io/api/v1/openapi/orders/ \
 --header "Authorization: Token cc92174571ac12f386e5657b187d39bb210f3270a837730125ed4029a44fsdfasd" \
 --header "Content-Type: application/json"
 ```
@@ -91,7 +91,7 @@ The Datatruck API returns JSON-encoded responses (It is list of loads):
 You can apply filters by giving filter=[] in query parameter.
 
 ```json
-https://{company_name}.datatruck.io/api/v1/openapi/orders?filter=[{"contains":"between","column":"delivery_time","value":"2024-06-26T00:00:00.000Z,2024-07-10T23:59:59.000Z"}]
+https://{company_name}.datatruck.io/api/v1/openapi/orders/?filter=[{"contains":"between","column":"delivery_time","value":"2024-06-26T00:00:00.000Z,2024-07-10T23:59:59.000Z"}]
 ```
 
 Contains can be: "between", "before" or "after".
@@ -105,5 +105,5 @@ When it is "before", it returns loads before this datetime.
 For "before" and "after" the query parameter should be as following:
 
 ```json
-https://{company_name}.datatruck.io/api/v1/openapi/orders?filter=[{"contains":"after","column":"delivery_time","value":"2024-06-26T00:00:00.000Z"}]
+https://{company_name}.datatruck.io/api/v1/openapi/orders/?filter=[{"contains":"after","column":"delivery_time","value":"2024-06-26T00:00:00.000Z"}]
 ```
