@@ -1,0 +1,51 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Starter Kit",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373",
+    "anchors": {
+      "from": "#0D9373",
+      "to": "#07C983"
+    }
+  },
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://datatruck.io"
+  },
+
+  "navigation": [
+    {
+      "group": "API Documentation",
+      "pages": ["api-reference/introduction"]
+    },
+    {
+      "group": "Endpoints",
+      "pages": [
+        "api-reference/endpoint/get_loads_list",
+        "api-reference/endpoint/create_load",
+        "api-reference/endpoint/get_load",
+        "api-reference/endpoint/get_work_order_list",
+        "api-reference/endpoint/create_work_order"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/datatruck_io",
+    "linkedin": "https://www.linkedin.com/company/datatruck"
+  },
+  "api": {
+    "baseUrl": "https://sardor.datatruck.io/api/v1/openapi/",
+    "auth": {
+      "method": "key",
+      "name": "Authorization"
+    }
+  }
+  
+}
