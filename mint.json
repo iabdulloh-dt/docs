@@ -32,7 +32,14 @@
         "api-reference/endpoint/create_load",
         "api-reference/endpoint/get_load",
         "api-reference/endpoint/get_work_order_list",
-        "api-reference/endpoint/create_work_order"
+        "api-reference/endpoint/create_work_order",
+        "api-reference/endpoint/get_dispatcher_board",
+        "api-reference/endpoint/get_driver_list",
+        "api-reference/endpoint/get_truck_list",
+        "api-reference/endpoint/get_trailer_list",
+        "api-reference/endpoint/post_create_driver",
+        "api-reference/endpoint/post_create_truck",
+        "api-reference/endpoint/post_create_trailer"
       ]
     }
   ],

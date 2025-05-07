@@ -201,6 +201,274 @@
           }
         }
       }
+    },
+    "/orders/dispatcher-board/list/": {
+      "get": {
+        "summary": "Dispatcher Board List",
+        "description": "Retrieve a list of work orders with related tasks, payments, and tags.",
+        "operationId": "getWorkOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "description": "Page number for paginated results"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter work orders by status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of dispatcher board retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDispatcherBoardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters"
+          }
+        }
+      }
+    },
+    "/orders/drivers/list/": {
+      "get": {
+        "operationId": "listDrivers",
+        "summary": "List Drivers",
+        "description": "Retrieves a paginated list of drivers, including their truck, trailer, dispatcher details, and other attributes such as contact information, status, and driver type.",
+        "responses": {
+          "200": {
+            "description": "Successful response with a paginated list of drivers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDriversResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/trailers/list/": {
+      "get": {
+        "operationId": "listTrailers",
+        "summary": "List Trailers",
+        "description": "Retrieves a paginated list of trailers, including their driver operators, trailer types, dispatch statuses, and other attributes such as unit number, VIN, make, model, and year.",
+        "responses": {
+          "200": {
+            "description": "Successful response with a paginated list of trailers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTrailersResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/trucks/list/": {
+      "get": {
+        "operationId": "listTrucks",
+        "summary": "List Trucks",
+        "description": "Retrieves a paginated list of trucks, including their unit number, plate number, VIN, make, model, year, status, and state.",
+        "responses": {
+          "200": {
+            "description": "Successful response with a paginated list of trucks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListTrucksResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/drivers/create/": {
+      "post": {
+        "operationId": "createDriver",
+        "summary": "Create Driver",
+        "description": "Creates a new driver with the provided details, including name, contact information, driver type, employee status, and optional license and dispatch information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Driver successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Unique identifier of the created driver."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Confirmation message."
+                    }
+                  },
+                  "required": ["id", "message"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/trailers/create/": {
+      "post": {
+        "operationId": "createTrailer",
+        "summary": "Create Trailer",
+        "description": "Creates a new trailer with the provided details, including make, model, year, unit number, VIN, and optional fields such as plate number, state, status, and driver assignments.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTrailerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Trailer successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Unique identifier of the created trailer."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Confirmation message."
+                    }
+                  },
+                  "required": ["id", "message"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders/trucks/create/": {
+      "post": {
+        "operationId": "createTruck",
+        "summary": "Create Truck",
+        "description": "Creates a new truck with the provided details, including make, model, year, plate number, unit number, VIN, state, ownership, and optional fields such as status, driver assignments, and warranty information.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTruckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Truck successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Unique identifier of the created truck."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Confirmation message."
+                    }
+                  },
+                  "required": ["id", "message"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message describing the issue."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1080,6 +1348,814 @@
             "type": "string"
           }
         }
+      },
+      "ListDispatcherBoardDriver": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the driver."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Full name of the driver."
+          }
+        },
+        "required": ["id", "full_name"]
+      },
+      "ListDispatcherBoardDispatcher": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the dispatcher."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Full name of the dispatcher."
+          }
+        },
+        "required": ["id", "full_name"]
+      },
+      "ListDispatcherBoardResponseItem": {
+        "type": "object",
+        "properties": {
+          "dispatcher": {
+            "$ref": "#/components/schemas/ListDispatcherBoardDispatcher",
+            "nullable": true,
+            "description": "Details of the dispatcher, if assigned."
+          },
+          "drivers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListDispatcherBoardDriver"
+            },
+            "description": "List of drivers associated with the dispatcher."
+          },
+          "total_driver_pay": {
+            "type": "number",
+            "format": "decimal",
+            "maximum": 999999999999999999.99,
+            "minimum": -999999999999999999.99,
+            "description": "Total driver pay for the dispatcher's orders."
+          },
+          "total_gross": {
+            "type": "number",
+            "format": "decimal",
+            "maximum": 999999999999999999.99,
+            "minimum": -999999999999999999.99,
+            "description": "Total gross amount for the dispatcher's orders."
+          },
+          "total_mile": {
+            "type": "number",
+            "format": "decimal",
+            "maximum": 999999999999999999.99,
+            "minimum": -999999999999999999.99,
+            "description": "Total miles covered by the dispatcher's orders."
+          },
+          "total_rpm": {
+            "type": "number",
+            "format": "decimal",
+            "maximum": 999999999999999999.99,
+            "minimum": -999999999999999999.99,
+            "description": "Total revenue per mile for the dispatcher's orders."
+          },
+          "total_trips": {
+            "type": "integer",
+            "description": "Total number of trips for the dispatcher's orders."
+          }
+        },
+        "required": [
+          "total_driver_pay",
+          "total_gross",
+          "total_mile",
+          "total_rpm",
+          "total_trips"
+        ]
+      },
+      "ListDispatcherBoardResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Total number of dispatcher board entries."
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of results."
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of results."
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListDispatcherBoardResponseItem"
+            },
+            "description": "List of dispatcher board entries."
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
+      },
+      "DriverTruck": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the truck."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the truck."
+          },
+          "plate_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plate number of the truck, if available."
+          }
+        },
+        "required": ["id", "unit_number"]
+      },
+      "DriverTrailer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the trailer."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the trailer."
+          },
+          "plate_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plate number of the trailer, if available."
+          }
+        },
+        "required": ["id", "unit_number"]
+      },
+      "DriverDispatcher": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the dispatcher."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Full name of the dispatcher."
+          }
+        },
+        "required": ["id", "full_name"]
+      },
+      "ListDriversResponseItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the driver."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "First name of the driver."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name of the driver."
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Full name of the driver."
+          },
+          "contact_number": {
+            "type": "string",
+            "description": "Contact number of the driver."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address of the driver."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the driver."
+          },
+          "employee_status": {
+            "type": "string",
+            "description": "Employment status of the driver."
+          },
+          "driver_type": {
+            "type": "string",
+            "description": "Type of driver."
+          }
+        },
+        "required": [
+          "id",
+          "first_name",
+          "last_name",
+          "full_name",
+          "contact_number",
+          "email",
+          "status",
+          "employee_status",
+          "driver_type"
+        ]
+      },
+      "ListDriversResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Total number of drivers."
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of results."
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of results."
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListDriversResponseItem"
+            },
+            "description": "List of driver entries."
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
+      },
+      "TrailerDriver": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the driver."
+          },
+          "first_name": {
+            "type": "string",
+            "description": "First name of the driver."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name of the driver."
+          }
+        },
+        "required": ["id", "first_name", "last_name"]
+      },
+      "TrailerType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the trailer type."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the trailer type."
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "TrailerDispatchStatus": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the dispatch status."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the dispatch status."
+          },
+          "color": {
+            "type": "string",
+            "nullable": true,
+            "description": "Color associated with the dispatch status, if available."
+          }
+        },
+        "required": ["id", "name"]
+      },
+      "ListTrailersResponseItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the trailer."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the trailer."
+          },
+          "plate_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plate number of the trailer, if available."
+          },
+          "vin": {
+            "type": "string",
+            "description": "Vehicle Identification Number (VIN) of the trailer."
+          },
+          "make": {
+            "type": "string",
+            "description": "Manufacturer of the trailer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the trailer."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Manufacturing year of the trailer."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the trailer."
+          },
+          "state": {
+            "type": "string",
+            "nullable": true,
+            "description": "State where the trailer is registered, if available."
+          },
+          "driver_operator": {
+            "$ref": "#/components/schemas/TrailerDriver",
+            "nullable": true,
+            "description": "Primary driver operator assigned to the trailer, if any."
+          },
+          "co_driver_operator": {
+            "$ref": "#/components/schemas/TrailerDriver",
+            "nullable": true,
+            "description": "Co-driver operator assigned to the trailer, if any."
+          },
+          "type": {
+            "$ref": "#/components/schemas/TrailerType",
+            "nullable": true,
+            "description": "Type of the trailer, if specified."
+          },
+          "dispatch_status": {
+            "$ref": "#/components/schemas/TrailerDispatchStatus",
+            "nullable": true,
+            "description": "Dispatch status of the trailer, if applicable."
+          }
+        },
+        "required": [
+          "id",
+          "unit_number",
+          "vin",
+          "make",
+          "model",
+          "year",
+          "status"
+        ]
+      },
+      "ListTrailersResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Total number of trailers."
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of results."
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of results."
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListTrailersResponseItem"
+            },
+            "description": "List of trailer entries."
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
+      },
+      "ListTrucksResponseItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the truck."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the truck."
+          },
+          "plate_number": {
+            "type": "string",
+            "description": "Plate number of the truck."
+          },
+          "vin": {
+            "type": "string",
+            "description": "Vehicle Identification Number (VIN) of the truck."
+          },
+          "make": {
+            "type": "string",
+            "description": "Manufacturer of the truck."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the truck."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Manufacturing year of the truck."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the truck."
+          },
+          "state": {
+            "type": "string",
+            "description": "State where the truck is registered."
+          }
+        },
+        "required": [
+          "id",
+          "unit_number",
+          "plate_number",
+          "vin",
+          "make",
+          "model",
+          "year",
+          "status",
+          "state"
+        ]
+      },
+      "ListTrucksResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Total number of trucks."
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of results."
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of results."
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListTrucksResponseItem"
+            },
+            "description": "List of truck entries."
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
+      },
+      "CreateDriverRequest": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "description": "First name of the driver."
+          },
+          "last_name": {
+            "type": "string",
+            "description": "Last name of the driver."
+          },
+          "contact_number": {
+            "type": "string",
+            "description": "Contact number of the driver."
+          },
+          "driver_type": {
+            "type": "string",
+            "description": "Type of driver."
+          },
+          "new_employee_status": {
+            "type": "string",
+            "description": "Employment status of the driver."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the driver, if applicable."
+          },
+          "telegram_number": {
+            "type": "string",
+            "nullable": true,
+            "default": "blank",
+            "description": "Telegram contact number, if provided."
+          },
+          "is_main": {
+            "type": "boolean",
+            "default": true,
+            "description": "Indicates if the driver is the main driver."
+          },
+          "mc_number": {
+            "type": "integer",
+            "description": "Motor carrier number for the driver."
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Driver's birth date, if provided."
+          },
+          "driver_license": {
+            "type": "string",
+            "nullable": true,
+            "description": "Driver's license number, if provided."
+          },
+          "driver_license_issue_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Issue date of the driver's license, if provided."
+          },
+          "driver_license_state": {
+            "type": "string",
+            "nullable": true,
+            "description": "State issuing the driver's license, if provided."
+          },
+          "driver_license_expiration": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Expiration date of the driver's license, if provided."
+          },
+          "driver_license_class": {
+            "type": "string",
+            "nullable": true,
+            "description": "Class of the driver's license, if provided."
+          },
+          "dispatch_status": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Dispatch status identifier, if applicable."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "Email address of the driver, if provided."
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "contact_number",
+          "driver_type",
+          "new_employee_status",
+          "mc_number"
+        ]
+      },
+      "CreateTrailerRequest": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Manufacturer of the trailer."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the trailer."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Manufacturing year of the trailer."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the trailer."
+          },
+          "vin": {
+            "type": "string",
+            "description": "Vehicle Identification Number (VIN) of the trailer."
+          },
+          "plate_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "Plate number of the trailer, if available."
+          },
+          "state": {
+            "type": "string",
+            "nullable": true,
+            "description": "State where the trailer is registered, if available."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the trailer, if applicable."
+          },
+          "ownership": {
+            "type": "string",
+            "nullable": true,
+            "description": "Ownership details of the trailer, if provided."
+          },
+          "company_mc": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Company motor carrier number, if applicable."
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional notes about the trailer, if provided."
+          },
+          "driver_operator": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the primary driver operator assigned to the trailer, if any."
+          },
+          "co_driver_operator": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the co-driver operator assigned to the trailer, if any."
+          },
+          "reg_expiry_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Registration expiry date of the trailer, if provided."
+          },
+          "last_annual_inspection_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Date of the last annual inspection, if provided."
+          },
+          "owner": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the owner of the trailer, if applicable."
+          }
+        },
+        "required": [
+          "make",
+          "model",
+          "year",
+          "unit_number",
+          "vin"
+        ]
+      },
+      "CreateTruckRequest": {
+        "type": "object",
+        "properties": {
+          "make": {
+            "type": "string",
+            "description": "Manufacturer of the truck."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the truck."
+          },
+          "year": {
+            "type": "integer",
+            "description": "Manufacturing year of the truck."
+          },
+          "plate_number": {
+            "type": "string",
+            "description": "Plate number of the truck."
+          },
+          "unit_number": {
+            "type": "string",
+            "description": "Unit number of the truck."
+          },
+          "vin": {
+            "type": "string",
+            "description": "Vehicle Identification Number (VIN) of the truck."
+          },
+          "state": {
+            "type": "string",
+            "description": "State where the truck is registered."
+          },
+          "ownership": {
+            "type": "string",
+            "description": "Ownership details of the truck."
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the truck, if applicable."
+          },
+          "company_mc": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Company motor carrier number, if applicable."
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true,
+            "description": "Additional notes about the truck, if provided."
+          },
+          "driver_operator": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the primary driver operator assigned to the truck, if any."
+          },
+          "co_driver_operator": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the co-driver operator assigned to the truck, if any."
+          },
+          "reg_expiry_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Registration expiry date of the truck, if provided."
+          },
+          "last_annual_inspection_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Date of the last annual inspection, if provided."
+          },
+          "odometer": {
+            "type": "number",
+            "format": "float",
+            "default": 0,
+            "description": "Current odometer reading of the truck."
+          },
+          "color": {
+            "type": "string",
+            "nullable": true,
+            "description": "Color of the truck, if provided."
+          },
+          "dimensions": {
+            "type": "string",
+            "nullable": true,
+            "description": "Dimensions of the truck, if provided."
+          },
+          "integration_eld": {
+            "type": "string",
+            "nullable": true,
+            "description": "Electronic Logging Device (ELD) integration details, if provided."
+          },
+          "integration_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "Integration ID for the truck, if provided."
+          },
+          "integration_api": {
+            "type": "string",
+            "nullable": true,
+            "description": "Integration API details for the truck, if provided."
+          },
+          "owner": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ID of the owner of the truck, if applicable."
+          },
+          "vendor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Vendor of the truck, if provided."
+          },
+          "seller": {
+            "type": "string",
+            "nullable": true,
+            "description": "Seller of the truck, if provided."
+          },
+          "ownership_pickup_odometer": {
+            "type": "number",
+            "format": "float",
+            "default": 0,
+            "description": "Odometer reading at the time of ownership pickup."
+          },
+          "ownership_pickup_date": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Date of ownership pickup, if provided."
+          },
+          "primary_warranty": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Primary warranty expiry date, if provided."
+          },
+          "secondary_warranty": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "description": "Secondary warranty expiry date, if provided."
+          }
+        },
+        "required": [
+          "make",
+          "model",
+          "year",
+          "plate_number",
+          "unit_number",
+          "vin",
+          "state",
+          "ownership"
+        ]
       }
     },
     "securitySchemes": {
