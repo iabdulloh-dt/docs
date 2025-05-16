@@ -245,7 +245,7 @@
         }
       }
     },
-    "/orders/drivers/list/": {
+    "/drivers/list/": {
       "get": {
         "operationId": "listDrivers",
         "summary": "List Drivers",
@@ -264,7 +264,7 @@
         }
       }
     },
-    "/orders/trailers/list/": {
+    "/trailers/list/": {
       "get": {
         "operationId": "listTrailers",
         "summary": "List Trailers",
@@ -283,7 +283,7 @@
         }
       }
     },
-    "/orders/trucks/list/": {
+    "/trucks/list/": {
       "get": {
         "operationId": "listTrucks",
         "summary": "List Trucks",
@@ -302,7 +302,7 @@
         }
       }
     },
-    "/orders/drivers/create/": {
+    "/drivers/create/": {
       "post": {
         "operationId": "createDriver",
         "summary": "Create Driver",
@@ -358,7 +358,7 @@
         }
       }
     },
-    "/orders/trailers/create/": {
+    "/trailers/create/": {
       "post": {
         "operationId": "createTrailer",
         "summary": "Create Trailer",
@@ -414,7 +414,7 @@
         }
       }
     },
-    "/orders/trucks/create/": {
+    "/trucks/create/": {
       "post": {
         "operationId": "createTruck",
         "summary": "Create Truck",
