@@ -1,0 +1,95 @@
+---
+title: "Update driver"
+openapi: "PUT /drivers/update/{id}/"
+---
+
+## API Url
+
+```json
+https://{company_name}.datatruck.io/api/v1/openapi/drivers/{id}/
+```
+
+Replace `{company_name}` with your company name and `{id}` with the driver ID.
+
+---
+
+## Sample Request
+
+```json
+curl --request PUT \
+--url https://{company_name}.datatruck.io/api/v1/openapi/drivers/102/ \
+--header "Authorization: Token YOUR_API_TOKEN" \
+--header "Content-Type: application/json" \
+--data '{
+  "account": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@companyx.com"
+  },
+  "contact_number": "+1 234-567-8901",
+  "driver_type": "company_driver",
+  "new_employee_status": "employed",
+  "status": "active",
+  "is_main": true,
+  "mc_number": 12345,
+  "brith_date": "1990-05-15",
+  "telegram_number": "@johndoe",
+  "driver_license": "D1234567",
+  "driver_license_issue_date": "2015-06-01",
+  "driver_license_state": "TX",
+  "driver_license_expiration": "2025-06-01",
+  "driver_license_class": "A",
+  "dispatch_status": 1
+}'
+```
+
+| Field                       | Type          | Required | Description                                               |
+| --------------------------- | ------------- | -------- | --------------------------------------------------------- |
+| `account`                   | object        | yes      | Nested driver account info                                |
+| `account.first_name`        | string        | yes      | First name of the driver                                  |
+| `account.last_name`         | string        | yes      | Last name of the driver                                   |
+| `account.email`             | string        | yes      | Email address                                             |
+| `contact_number`            | string        | yes      | Contact number                                            |
+| `driver_type`               | string        | yes      | Type of driver (`company_driver`, `owner_operator`, etc.) |
+| `new_employee_status`       | string        | yes      | New employee status                                       |
+| `status`                    | string        | yes      | Current status of the driver                              |
+| `is_main`                   | boolean       | yes      | Is main driver                                            |
+| `mc_number`                 | integer       | yes      | MC number                                                 |
+| `brith_date`                | string (date) | yes      | Date of birth                                             |
+| `telegram_number`           | string        | no       | Telegram username / handle                                |
+| `driver_license`            | string        | no       | Driver license number                                     |
+| `driver_license_issue_date` | string (date) | no       | License issue date                                        |
+| `driver_license_state`      | string        | no       | License issuing state                                     |
+| `driver_license_expiration` | string (date) | no       | License expiration date                                   |
+| `driver_license_class`      | string        | no       | License class                                             |
+| `dispatch_status`           | integer       | no       | Dispatch status code                                      |
+
+## Sample Response
+
+```json
+[
+  {
+    "id": 102,
+    "account": {
+      "first_name": "John",
+      "last_name": "Doe",
+      "full_name": "John Doe",
+      "email": "john.doe@companyx.com"
+    },
+    "contact_number": "+1 234-567-8901",
+    "driver_type": "company_driver",
+    "employee_status": "employed",
+    "status": "active",
+    "is_main": true,
+    "mc_number": 12345,
+    "brith_date": "1990-05-15",
+    "telegram_number": "@johndoe",
+    "driver_license": "D1234567",
+    "driver_license_issue_date": "2015-06-01",
+    "driver_license_state": "TX",
+    "driver_license_expiration": "2025-06-01",
+    "driver_license_class": "A",
+    "dispatch_status": 1
+  }
+]
+```
