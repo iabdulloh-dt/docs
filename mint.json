@@ -35,6 +35,7 @@
         "api-reference/endpoint/create_work_order",
         "api-reference/endpoint/get_dispatcher_board",
         "api-reference/endpoint/get_driver_list",
+        "api-reference/endpoint/update_driver",
         "api-reference/endpoint/get_truck_list",
         "api-reference/endpoint/get_trailer_list",
         "api-reference/endpoint/post_create_driver",
