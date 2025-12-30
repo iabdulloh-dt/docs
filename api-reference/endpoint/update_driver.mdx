@@ -6,7 +6,7 @@ openapi: "PUT /drivers/update/{id}/"
 ## API Url
 
 ```json
-https://{company_name}.datatruck.io/api/v1/openapi/drivers/{id}/
+https://{company_name}.datatruck.io/api/v1/openapi/drivers/update/{id}/
 ```
 
 Replace `{company_name}` with your company name and `{id}` with the driver ID.
@@ -17,7 +17,7 @@ Replace `{company_name}` with your company name and `{id}` with the driver ID.
 
 ```json
 curl --request PUT \
---url https://{company_name}.datatruck.io/api/v1/openapi/drivers/102/ \
+--url https://{company_name}.datatruck.io/api/v1/openapi/drivers/update/102/ \
 --header "Authorization: Token YOUR_API_TOKEN" \
 --header "Content-Type: application/json" \
 --data '{

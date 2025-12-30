@@ -65,6 +65,35 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NewLoad"
+                },
+                "example": {
+                  "load_id": "LD-987654",
+                  "load_pay": "5000.00",
+                  "customer": "ABC Logistics",
+                  "mc_number": "Armitage",
+                  "weight": "2000kg",
+                  "goods": "Furniture",
+                  "rate_confirmation": "base64_encoded_string",
+                  "stops": [
+                    {
+                      "company_name": "Pickup Company",
+                      "address": "123 Pickup Street",
+                      "zip_code": "10001",
+                      "enter_time": "2025-02-06T08:30:00Z",
+                      "exit_time": "2025-02-06T09:30:00Z",
+                      "reference_id": "REF-001",
+                      "stop_type": "pickup"
+                    },
+                    {
+                      "company_name": "Delivery Company",
+                      "address": "456 Delivery Avenue",
+                      "zip_code": "20002",
+                      "enter_time": "2025-02-07T14:00:00Z",
+                      "exit_time": "2025-02-07T15:00:00Z",
+                      "reference_id": "REF-002",
+                      "stop_type": "delivery"
+                    }
+                  ]
                 }
               }
             },
@@ -181,6 +210,54 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WorkOrderRequest"
+              },
+              "example": {
+                "reference_number": "REF-12345",
+                "status": "Pending",
+                "type_work_order": "Repair",
+                "payment_type": "Credit Card",
+                "truck": "Truck-45",
+                "trailer": "Trailer-22",
+                "fee_total_price": "50.00",
+                "tax_total_price": "25.00",
+                "total_price": "500.00",
+                "invoice_id": "INV-98765",
+                "scheduled_on_date": "2025-03-10T08:00:00Z",
+                "assigned_to": "John Doe",
+                "odometer": 120000,
+                "location": "Los Angeles, CA",
+                "vendor": "ABC Auto Repair",
+                "vendor_phone": "+1-555-1234",
+                "vendor_email": "vendor@example.com",
+                "procedure_name": "TRK Accident Damage / Repair",
+                "notes": [
+                  {
+                    "body": "Replace front brake pads"
+                  }
+                ],
+                "work_order_tasks": [
+                  {
+                    "custom_task": "Brake replacement",
+                    "parts_price": "200.00",
+                    "parts_quantity": 2,
+                    "total_parts_price": "400.00",
+                    "labor_price": "100.00",
+                    "labor_hours": 2,
+                    "total_labor_price": "200.00",
+                    "total_price": "600.00"
+                  }
+                ],
+                "compensation": [
+                  {
+                    "driver": "Driver Name",
+                    "customer": "Customer Name"
+                  }
+                ],
+                "tags": [
+                  {
+                    "name": "Urgent"
+                  }
+                ]
               }
             }
           }
@@ -313,6 +390,25 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateDriverRequest"
+              },
+              "example": {
+                "first_name": "John",
+                "last_name": "Smith",
+                "contact_number": "+1-555-0123",
+                "driver_type": "Company Driver",
+                "new_employee_status": "Active",
+                "status": "Available",
+                "telegram_number": "blank",
+                "is_main": true,
+                "mc_number": 1,
+                "birth_date": "1985-06-15",
+                "driver_license": "D1234567",
+                "driver_license_issue_date": "2020-03-10",
+                "driver_license_state": "CA",
+                "driver_license_expiration": "2028-03-10",
+                "driver_license_class": "A",
+                "dispatch_status": 1,
+                "email": "jsmith@example.com"
               }
             }
           }
@@ -582,12 +678,6 @@
             "nullable": true,
             "example": "REF-001",
             "description": "Reference ID for the stop"
-          },
-          "seal_number": {
-            "type": "string",
-            "nullable": true,
-            "example": "SEAL-789",
-            "description": "Seal number for the load at this stop"
           },
           "stop_type": {
             "type": "string",
@@ -1185,6 +1275,12 @@
           "vendor"
         ],
         "properties": {
+          "reference_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "REF-12345",
+            "description": "Reference number for the work order"
+          },
           "status": {
             "type": "string",
             "example": "Pending",
@@ -1281,7 +1377,13 @@
           "notes": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "body": {
+                  "type": "string",
+                  "description": "Note content"
+                }
+              }
             },
             "description": "Additional notes related to the work order"
           },
@@ -1302,7 +1404,13 @@
           "tags": {
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Tag name"
+                }
+              }
             },
             "description": "Tags associated with the work order"
           }
@@ -1943,85 +2051,103 @@
         "properties": {
           "first_name": {
             "type": "string",
+            "example": "John",
             "description": "First name of the driver."
           },
           "last_name": {
             "type": "string",
+            "example": "Smith",
             "description": "Last name of the driver."
           },
           "contact_number": {
             "type": "string",
+            "example": "+1-555-0123",
             "description": "Contact number of the driver."
           },
           "driver_type": {
             "type": "string",
+            "example": "Company Driver",
             "description": "Type of driver."
           },
           "new_employee_status": {
             "type": "string",
+            "example": "Active",
             "description": "Employment status of the driver."
           },
           "status": {
             "type": "string",
+            "nullable": true,
+            "example": "Available",
             "description": "Current status of the driver, if applicable."
           },
           "telegram_number": {
             "type": "string",
             "nullable": true,
             "default": "blank",
+            "example": "blank",
             "description": "Telegram contact number, if provided."
           },
           "is_main": {
             "type": "boolean",
             "default": true,
+            "example": true,
             "description": "Indicates if the driver is the main driver."
           },
           "mc_number": {
             "type": "integer",
-            "description": "Motor carrier number for the driver."
+            "example": 1,
+            "description": "Motor carrier number ID (must be an existing MC number ID)."
           },
           "birth_date": {
             "type": "string",
             "format": "date",
             "nullable": true,
-            "description": "Driver's birth date, if provided."
+            "example": "1985-06-15",
+            "description": "Driver's birth date in YYYY-MM-DD format, if provided."
           },
           "driver_license": {
             "type": "string",
             "nullable": true,
+            "example": "D1234567",
             "description": "Driver's license number, if provided."
           },
           "driver_license_issue_date": {
             "type": "string",
             "format": "date",
             "nullable": true,
-            "description": "Issue date of the driver's license, if provided."
+            "example": "2020-03-10",
+            "description": "Issue date of the driver's license in YYYY-MM-DD format, if provided."
           },
           "driver_license_state": {
             "type": "string",
             "nullable": true,
+            "example": "CA",
             "description": "State issuing the driver's license, if provided."
           },
           "driver_license_expiration": {
             "type": "string",
             "format": "date",
             "nullable": true,
-            "description": "Expiration date of the driver's license, if provided."
+            "example": "2028-03-10",
+            "description": "Expiration date of the driver's license in YYYY-MM-DD format, if provided."
           },
           "driver_license_class": {
             "type": "string",
             "nullable": true,
+            "example": "A",
             "description": "Class of the driver's license, if provided."
           },
           "dispatch_status": {
             "type": "integer",
             "nullable": true,
-            "description": "Dispatch status identifier, if applicable."
+            "example": 1,
+            "description": "Dispatch status ID (integer), if applicable."
           },
           "email": {
             "type": "string",
             "format": "email",
             "nullable": true,
+            "example": "jsmith@example.com",
             "description": "Email address of the driver, if provided."
           }
         },
