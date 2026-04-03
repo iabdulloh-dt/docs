@@ -1992,19 +1992,33 @@
             "description": "State where the truck is registered."
           },
           "assigned_driver": {
-          "type": "object",
-          "nullable": true,
-          "properties": {
-            "id": {
-              "type": "integer",
-              "description": "Unique identifier of the assigned driver."
-            },
-            "full_name": {
-              "type": "string",
-              "description": "Full name of the assigned driver."
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Unique identifier of the assigned driver."
+              },
+              "full_name": {
+                "type": "string",
+                "description": "Full name of the assigned driver."
+              }
+            }
+          },
+          "assigned_co_driver": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Unique identifier of the assigned co-driver."
+              },
+              "full_name": {
+                "type": "string",
+                "description": "Full name of the assigned co-driver."
+              }
             }
           }
-        }
         },
         
         "required": [
