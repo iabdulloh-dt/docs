@@ -17,28 +17,46 @@
   "paths": {
     "/orders/": {
       "get": {
-        "description": "The Datatruck API returns JSON-encoded responses (It is list of loads):",
+        "operationId": "listOrders",
+        "summary": "List Orders",
+        "description": "Retrieve a paginated list of loads (orders) with related stops, trips, tags, documents, and ETA details.",
         "parameters": [
           {
-            "name": "limit",
+            "name": "page",
             "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
+            "required": false,
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
+          },
+          {
+            "name": "ordering",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "-created_datetime" },
+            "description": "ORM field path to order by. Prefix with `-` for descending order (e.g. `-created_datetime`, `load_pay`, `status`)."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "[{\"column\":\"status\",\"value\":\"booked\",\"contains\":\"is\"}]" },
+            "description": "JSON-encoded array of filter objects. Each object has `column` (ORM field path), `value`, and `contains` (operator). Supported operators: `is`, `is_not`, `is_in`, `is_not_in`, `contains`, `before`, `after`, `greater_than`, `less_than`, `between`, `between_datetime`, `isnull`, `today`, `exclude`, `exclude_in`. Example: `[{\"column\":\"status\",\"value\":\"booked\",\"contains\":\"is\"},{\"column\":\"load_pay\",\"value\":\"1000,5000\",\"contains\":\"between\"}]`"
           }
         ],
         "responses": {
           "200": {
-            "description": "Orders response",
+            "description": "Paginated list of orders.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Load"
-                  }
+                  "$ref": "#/components/schemas/OrderListResponse"
                 }
               }
             }
@@ -47,9 +65,7 @@
             "description": "Unexpected error",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
+                "schema": { "$ref": "#/components/schemas/Error" }
               }
             }
           }
@@ -159,27 +175,50 @@
     "/work-orders/":{
       "get": {
         "summary": "Get Work Order List",
-        "description": "Retrieve a list of work orders with related tasks, payments, and tags.",
+        "description": "Retrieve a paginated list of work orders with related tasks, payments, attachments, and tags. `from_date` and `to_date` are required query parameters.",
         "operationId": "getWorkOrders",
         "parameters": [
+          {
+            "name": "from_date",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date", "example": "2025-01-01" },
+            "description": "Start date filter (inclusive). Format: YYYY-MM-DD."
+          },
+          {
+            "name": "to_date",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date", "example": "2025-01-31" },
+            "description": "End date filter (inclusive). Format: YYYY-MM-DD. Must be after from_date."
+          },
           {
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "description": "Page number for paginated results"
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
           },
           {
-            "name": "status",
+            "name": "page_size",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter work orders by status"
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
+          },
+          {
+            "name": "ordering",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "-created_datetime" },
+            "description": "ORM field path to order by. Prefix with `-` for descending."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "[{\"column\":\"status\",\"value\":\"Pending\",\"contains\":\"is\"}]" },
+            "description": "JSON-encoded array of filter objects. Each object has `column`, `value`, and `contains` (operator). Supported operators: `is`, `is_not`, `is_in`, `is_not_in`, `contains`, `before`, `after`, `greater_than`, `less_than`, `between`, `between_datetime`, `isnull`, `today`, `exclude`, `exclude_in`."
           }
         ],
         "responses": {
@@ -282,27 +321,22 @@
     "/orders/dispatcher-board/list/": {
       "get": {
         "summary": "Dispatcher Board List",
-        "description": "Retrieve a list of work orders with related tasks, payments, and tags.",
-        "operationId": "getWorkOrders",
+        "description": "Retrieve a paginated dispatcher board showing each dispatcher with their assigned drivers and aggregated trip statistics (total miles, gross, driver pay, RPM, trips).",
+        "operationId": "getDispatcherBoard",
         "parameters": [
           {
             "name": "page",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "description": "Page number for paginated results"
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
           },
           {
-            "name": "status",
+            "name": "page_size",
             "in": "query",
             "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter work orders by status"
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
           }
         ],
         "responses": {
@@ -326,7 +360,37 @@
       "get": {
         "operationId": "listDrivers",
         "summary": "List Drivers",
-        "description": "Retrieves a paginated list of drivers, including their truck, trailer, dispatcher details, and other attributes such as contact information, status, and driver type.",
+        "description": "Retrieves a paginated list of active drivers, including their truck, trailer, dispatcher, team driver, payment tariff, and emergency contact details.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
+          },
+          {
+            "name": "ordering",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "account__last_name" },
+            "description": "ORM field path to order by. Prefix with `-` for descending."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "[{\"column\":\"driver_type\",\"value\":\"Owner Operator\",\"contains\":\"is\"}]" },
+            "description": "JSON-encoded array of filter objects. Each object has `column`, `value`, and `contains` (operator). Supported operators: `is`, `is_not`, `is_in`, `is_not_in`, `contains`, `before`, `after`, `greater_than`, `less_than`, `between`, `between_datetime`, `isnull`, `today`, `exclude`, `exclude_in`."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response with a paginated list of drivers.",
@@ -345,7 +409,37 @@
       "get": {
         "operationId": "listTrailers",
         "summary": "List Trailers",
-        "description": "Retrieves a paginated list of trailers, including their driver operators, trailer types, dispatch statuses, and other attributes such as unit number, VIN, make, model, and year.",
+        "description": "Retrieves a paginated list of active trailers, including their driver/co-driver operators, trailer type, dispatch status, unit number, VIN, make, model, and year.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "ABC123" },
+            "description": "Search term matched against unit_number, plate_number, vin, make, and model (case-insensitive)."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "Active" },
+            "description": "Filter trailers by exact status value."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response with a paginated list of trailers.",
@@ -364,7 +458,37 @@
       "get": {
         "operationId": "listTrucks",
         "summary": "List Trucks",
-        "description": "Retrieves a paginated list of trucks, including their unit number, plate number, VIN, make, model, year, status, and state.",
+        "description": "Retrieves a paginated list of active trucks, including their unit number, plate number, VIN, make, model, year, status, state, and assigned driver/co-driver.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 1 },
+            "description": "Page number for paginated results."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "example": 10, "maximum": 25 },
+            "description": "Number of results per page (max 25, default 10)."
+          },
+          {
+            "name": "ordering",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "unit_number" },
+            "description": "ORM field path to order by. Prefix with `-` for descending."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "example": "[{\"column\":\"status\",\"value\":\"Active\",\"contains\":\"is\"}]" },
+            "description": "JSON-encoded array of filter objects. Each object has `column`, `value`, and `contains` (operator). Supported operators: `is`, `is_not`, `is_in`, `is_not_in`, `contains`, `before`, `after`, `greater_than`, `less_than`, `between`, `between_datetime`, `isnull`, `today`, `exclude`, `exclude_in`."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response with a paginated list of trucks.",
@@ -375,6 +499,77 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/drivers/update/{pk}/": {
+      "put": {
+        "operationId": "updateDriver",
+        "summary": "Update Driver",
+        "description": "Updates an existing driver's account info, contact details, driver type, employee status, license details, and dispatch status.",
+        "parameters": [
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Unique identifier of the driver to update."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateDriverRequest" },
+              "example": {
+                "account": {
+                  "first_name": "John",
+                  "last_name": "Smith",
+                  "email": "jsmith@example.com"
+                },
+                "contact_number": "+1-555-0123",
+                "driver_type": "Company Driver",
+                "new_employee_status": "Active",
+                "status": "Available",
+                "is_main": true,
+                "mc_number": 1,
+                "brith_date": "1985-06-15",
+                "telegram_number": null,
+                "driver_license": "D1234567",
+                "driver_license_issue_date": "2020-03-10",
+                "driver_license_state": "CA",
+                "driver_license_expiration": "2028-03-10",
+                "driver_license_class": "A",
+                "dispatch_status": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Driver successfully updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": { "type": "string", "example": "success" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Driver not found."
           }
         }
       }
@@ -421,16 +616,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "integer",
-                      "description": "Unique identifier of the created driver."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Confirmation message."
-                    }
-                  },
-                  "required": ["id", "message"]
+                    "detail": { "type": "string", "example": "success" }
+                  }
                 }
               }
             }
@@ -439,15 +626,7 @@
             "description": "Invalid request data.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/Error" }
               }
             }
           }
@@ -477,16 +656,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "integer",
-                      "description": "Unique identifier of the created trailer."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Confirmation message."
-                    }
-                  },
-                  "required": ["id", "message"]
+                    "detail": { "type": "string", "example": "success" }
+                  }
                 }
               }
             }
@@ -495,15 +666,7 @@
             "description": "Invalid request data.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/Error" }
               }
             }
           }
@@ -530,20 +693,7 @@
             "description": "Truck successfully created.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "integer",
-                      "description": "Unique identifier of the created truck."
-                    },
-                    "message": {
-                      "type": "string",
-                      "description": "Confirmation message."
-                    }
-                  },
-                  "required": ["id", "message"]
-                }
+                "schema": { "$ref": "#/components/schemas/CreateTruckResponse" }
               }
             }
           },
@@ -551,15 +701,7 @@
             "description": "Invalid request data.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "Error message describing the issue."
-                    }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/Error" }
               }
             }
           }
@@ -587,6 +729,7 @@
       },
       "NewLoad": {
         "type": "object",
+        "required": ["customer", "mc_number"],
         "properties": {
           "load_id": {
             "type": "string",
@@ -642,6 +785,7 @@
       },
       "Stop": {
         "type": "object",
+        "required": ["enter_time", "exit_time"],
         "properties": {
           "company_name": {
             "type": "string",
@@ -689,6 +833,7 @@
       },
       "CreateOrderResponse": {
         "type": "object",
+        "required": ["id", "shipment_id", "customer", "status", "mc_number", "load_id", "references_id", "load_pay", "total_miles", "tags"],
         "properties": {
           "id": {
             "type": "integer",
@@ -771,6 +916,12 @@
       },
       "Order": {
         "type": "object",
+        "required": [
+          "id", "status", "created_datetime", "tags", "equipment_type",
+          "equipment_type_child", "estimated_mile", "estimated_time",
+          "eta_detail", "trip", "batch_orders", "assigned_driver_n_truck",
+          "assigned_carrier", "is_flagged", "documents", "stops"
+        ],
         "properties": {
           "id": {
             "type": "integer",
@@ -997,24 +1148,142 @@
           "assigned_carrier": {
             "type": "string",
             "nullable": true
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "example": false,
+            "description": "Whether the order has been flagged for attention."
+          },
+          "flagging_reason": {
+            "type": "string",
+            "nullable": true,
+            "example": null,
+            "description": "Reason the order was flagged, if applicable."
+          },
+          "documents": {
+            "type": "array",
+            "description": "Documents attached to the order (rate confirmation, bill of lading, proof of delivery, commercial invoice).",
+            "items": {
+              "$ref": "#/components/schemas/OrderDocument"
+            }
           }
         }
+      },
+      "OrderDocument": {
+        "type": "object",
+        "properties": {
+          "file_type": {
+            "type": "string",
+            "example": "rate_confirmation",
+            "description": "Type of document: rate_confirmation, bill_of_lading, proof_of_delivery, commercial_invoice."
+          },
+          "file_link": {
+            "type": "string",
+            "format": "uri",
+            "example": "https://storage.example.com/docs/rc-12345.pdf",
+            "description": "URL to the document file."
+          },
+          "uploaded_by": {
+            "type": "string",
+            "nullable": true,
+            "example": "John Doe",
+            "description": "Full name of the user who uploaded the document."
+          },
+          "uploaded_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-02-06T12:00:00Z",
+            "description": "Timestamp when the document was uploaded."
+          }
+        },
+        "required": ["file_type", "file_link", "uploaded_at"]
+      },
+      "OrderListResponse": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "description": "Total number of orders.",
+            "example": 150
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the next page of results."
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL to the previous page of results."
+          },
+          "results": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Order" },
+            "description": "List of orders."
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
       },
       "OrderStopLocation": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer"
+            "type": "integer",
+            "description": "Unique identifier for the stop."
+          },
+          "order": {
+            "type": "integer",
+            "description": "ID of the parent order."
           },
           "stop_type": {
-            "type": "string"
+            "type": "string",
+            "example": "pickup",
+            "description": "Type of stop: pickup or delivery."
+          },
+          "location": {
+            "$ref": "#/components/schemas/StopLocation",
+            "nullable": true
           },
           "reference_id": {
-            "type": "string"
+            "type": "string",
+            "nullable": true,
+            "example": "REF-001"
           },
           "proof_of_delivery": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "ready_time_start_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "ready_time_end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
           }
+        }
+      },
+      "StopLocation": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "company": { "type": "string", "nullable": true },
+          "address1": { "type": "string", "nullable": true },
+          "address2": { "type": "string", "nullable": true },
+          "city": { "type": "string", "nullable": true },
+          "state": { "type": "string", "nullable": true },
+          "zip_code": { "type": "string", "nullable": true },
+          "contact_name": { "type": "string", "nullable": true },
+          "place_name": { "type": "string", "nullable": true },
+          "latitude": { "type": "number", "format": "float", "nullable": true, "example": 33.749 },
+          "longitude": { "type": "number", "format": "float", "nullable": true, "example": -84.388 },
+          "is_active": { "type": "boolean" }
         }
       },
       "ETADetail": {
@@ -1031,10 +1300,47 @@
         }
       },
       "TripOrder": {
-        "type": "object"
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "id": { "type": "integer" },
+          "status": { "type": "string", "example": "assigned" },
+          "trip_id": { "type": "string", "nullable": true, "example": "TR-002489-01" },
+          "mile": { "type": "string", "format": "decimal", "nullable": true, "example": "574.31" },
+          "empty_mile": { "type": "string", "format": "decimal", "nullable": true, "example": "0.00" },
+          "total_load_pay": { "type": "string", "format": "decimal", "nullable": true, "example": "148.17" },
+          "carrier__name": { "type": "string", "nullable": true },
+          "driver__full_name": { "type": "string", "nullable": true },
+          "team_driver__full_name": { "type": "string", "nullable": true },
+          "truck__unit_number": { "type": "string", "nullable": true },
+          "pickup": { "$ref": "#/components/schemas/StopLocation", "nullable": true },
+          "delivery": { "$ref": "#/components/schemas/StopLocation", "nullable": true },
+          "settlement": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "settlement__status": { "type": "string", "nullable": true },
+              "settlement__settlement_number": { "type": "string", "nullable": true },
+              "settlement__is_sent": { "type": "boolean", "nullable": true }
+            }
+          }
+        }
       },
       "OrderFullBatchOrder": {
-        "type": "object"
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "invoice_number": { "type": "string", "nullable": true },
+          "is_sent": { "type": "boolean", "nullable": true },
+          "batch": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "batch_number": { "type": "string", "nullable": true },
+              "status": { "type": "string", "nullable": true }
+            }
+          }
+        }
       },
       "ListWorkOrderResponse": {
         "type": "object",
@@ -1066,6 +1372,7 @@
       },
       "WorkOrder": {
         "type": "object",
+        "required": ["id", "number", "reference_number", "status", "vendor", "assigned_to", "attachments"],
         "properties": {
           "id": {
             "type": "integer",
@@ -1076,6 +1383,11 @@
             "type": "string",
             "example": "WO-2025-001",
             "description": "Work order number"
+          },
+          "reference_number": {
+            "type": "string",
+            "example": "REF-12345",
+            "description": "External reference number for the work order."
           },
           "status": {
             "type": "string",
@@ -1156,6 +1468,13 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/WorkOrderPayment"
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "description": "Files attached to the work order.",
+            "items": {
+              "$ref": "#/components/schemas/WorkOrderAttachment"
             }
           },
           "scheduled_on_date": {
@@ -1262,6 +1581,25 @@
           }
         }
       },
+      "WorkOrderAttachment": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "name": { "type": "string", "example": "Invoice scan" },
+          "document": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "created_datetime": { "type": "string", "format": "date-time" },
+              "file": { "type": "string", "format": "uri", "example": "https://storage.example.com/docs/scan.pdf" },
+              "format": { "type": "string", "example": "pdf" },
+              "name": { "type": "string", "example": "scan.pdf" }
+            },
+            "required": ["id", "created_datetime", "file", "format", "name"]
+          }
+        },
+        "required": ["id", "name", "document"]
+      },
       "WorkOrderRequest": {
         "type": "object",
         "required": [
@@ -1269,7 +1607,6 @@
           "type_work_order",
           "payment_type",
           "invoice_id",
-          "scheduled_on_date",
           "assigned_to",
           "odometer",
           "vendor"
@@ -2414,6 +2751,21 @@
           "state",
           "ownership"
         ]
+      },
+      "CreateTruckResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "description": "Unique identifier of the created truck." },
+          "unit_number": { "type": "string" },
+          "plate_number": { "type": "string" },
+          "vin": { "type": "string" },
+          "make": { "type": "string" },
+          "model": { "type": "string" },
+          "year": { "type": "integer" },
+          "status": { "type": "string" },
+          "state": { "type": "string" }
+        },
+        "required": ["id", "unit_number", "plate_number", "vin", "make", "model", "year", "status", "state"]
       }
     },
     "securitySchemes": {

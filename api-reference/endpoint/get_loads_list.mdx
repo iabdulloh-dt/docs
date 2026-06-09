@@ -1,6 +1,6 @@
 ---
 title: 'Get Loads List'
-openapi: 'GET /orders'
+openapi: 'GET /orders/'
 ---
 
 ## API Url
@@ -23,87 +23,153 @@ curl --request GET \
 ```
 
 ## Sample response
-The Datatruck API returns JSON-encoded responses (It is list of loads):
 
 ```json
-[
-    {
-        "id": 2489,
-        "load_id": "T-111QT34XS",
-        "shipment_id": "DT-002489",
-        "status": "dispatched",
-        "load_pay": 148.17,
-        "total_miles": 574.31,
-        "created_datetime": "2023-10-11T13:42:54.456045Z",
-        "created_by__full_name": "Super Admin",
-        "total_other_pay": 122.0,
-        "total_pay": 270.17,
-        "per_mile_revenue": 0.26,
-        "tags": [
-            {
-                "name": "AUTOBOT"
-            }
-        ],
-        "dispatcher__full_name": " ",
-        "customer__company_name": "string",
-        "mc_number__company_name": "Updated Test Mc Number",
-        "office__office_name": null,
-        "pickup_appointment_time": "2023-10-08T20:00:00Z",
-        "delivery_appointment_time": "2023-10-11T23:14:00Z",
-        "pickup_time": "2023-10-08T20:00:00Z",
-        "delivery_time": "2023-10-11T23:14:00Z",
-        "trip": {
-            "id": 1913,
-            "status": "assigned",
-            "trip_id": "TR-002489-01",
-            "mile": 574.31,
-            "empty_mile": 0.0,
-            "total_load_pay": 148.17,
-            "carrier__name": null,
-            "driver__full_name": "awefas fasdfads",
-            "team_driver__full_name": " ",
-            "truck__unit_number": "2105",
-            "pickup": {
-                "id": 1348,
-                "company": "DWA9",
-                "address1": "3711 142nd Ave E, Sumner, WA 98390, USA",
-                "city": "Sumner",
-                "state": "Washington",
-                "zip_code": "98390"
+{
+    "count": 150,
+    "next": "https://companyx.datatruck.io/api/v1/openapi/orders/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 2489,
+            "load_id": "T-111QT34XS",
+            "shipment_id": "DT-002489",
+            "status": "dispatched",
+            "load_pay": "148.17",
+            "total_miles": "574.31",
+            "created_datetime": "2023-10-11T13:42:54.456045Z",
+            "created_by__full_name": "Super Admin",
+            "total_other_pay": "122.00",
+            "total_pay": "270.17",
+            "per_mile_revenue": "0.26",
+            "tags": [{"name": "AUTOBOT"}],
+            "dispatcher__full_name": "Alice Johnson",
+            "customer__company_name": "ABC Logistics",
+            "mc_number__company_name": "Updated Test Mc Number",
+            "office__office_name": null,
+            "pickup_appointment_time": "2023-10-08T20:00:00Z",
+            "delivery_appointment_time": "2023-10-11T23:14:00Z",
+            "pickup_time": "2023-10-08T20:00:00Z",
+            "delivery_time": "2023-10-11T23:14:00Z",
+            "stops": [
+                {
+                    "id": 101,
+                    "order": 2489,
+                    "stop_type": "pickup",
+                    "location": {
+                        "id": 1348,
+                        "company": "DWA9",
+                        "address1": "3711 142nd Ave E, Sumner, WA 98390, USA",
+                        "city": "Sumner",
+                        "state": "Washington",
+                        "zip_code": "98390",
+                        "latitude": 47.203,
+                        "longitude": -122.229,
+                        "is_active": true
+                    },
+                    "reference_id": "REF-001",
+                    "proof_of_delivery": null
+                }
+            ],
+            "is_flagged": false,
+            "flagging_reason": null,
+            "documents": [
+                {
+                    "file_type": "rate_confirmation",
+                    "file_link": "https://storage.example.com/docs/rc-2489.pdf",
+                    "uploaded_by": "Super Admin",
+                    "uploaded_at": "2023-10-11T13:50:00Z"
+                }
+            ],
+            "trip": {
+                "id": 1913,
+                "status": "assigned",
+                "trip_id": "TR-002489-01",
+                "mile": "574.31",
+                "empty_mile": "0.00",
+                "total_load_pay": "148.17",
+                "carrier__name": null,
+                "driver__full_name": "John Smith",
+                "team_driver__full_name": null,
+                "truck__unit_number": "2105",
+                "pickup": {
+                    "id": 1348,
+                    "company": "DWA9",
+                    "address1": "3711 142nd Ave E",
+                    "city": "Sumner",
+                    "state": "Washington",
+                    "zip_code": "98390",
+                    "latitude": 47.203,
+                    "longitude": -122.229,
+                    "is_active": true
+                },
+                "delivery": null,
+                "settlement": null
             },
-            "delivery": {
-                "id": 1348,
-                "company": "DWA9",
-                "address1": "3711 142nd Ave E, Sumner, WA 98390, USA",
-                "city": "Sumner",
-                "state": "Washington",
-                "zip_code": "98390"
-            },
-            "settlement": null
-        },
-        "batch_orders": null
-    }
-]
-
+            "batch_orders": null,
+            "eta_detail": {"on_time": true, "eta_datetime": null}
+        }
+    ]
+}
 ```
 
-## Filters
-You can apply filters by giving filter=[] in query parameter.
+## Filtering
 
-```json
-https://{company_name}.datatruck.io/api/v1/openapi/orders/?filter=[{"contains":"between","column":"delivery_time","value":"2024-06-26T00:00:00.000Z,2024-07-10T23:59:59.000Z"}]
+Pass a JSON-encoded array to the `filter` query parameter. Each object in the array has three keys:
+
+| Key | Description |
+|-----|-------------|
+| `column` | ORM field path (e.g. `status`, `load_pay`, `delivery_time`) |
+| `value` | The filter value |
+| `contains` | Operator (see table below) |
+
+### Supported operators
+
+| Operator | Description | Example value |
+|----------|-------------|---------------|
+| `is` | Exact match | `"booked"` |
+| `is_not` | Exclude exact match | `"cancelled"` |
+| `is_in` | Match any in list | `["booked","dispatched"]` |
+| `is_not_in` | Exclude all in list | `["cancelled"]` |
+| `contains` | Case-insensitive substring | `"logistics"` |
+| `before` | Less than or equal | `"2024-07-10T23:59:59Z"` |
+| `after` | Greater than or equal | `"2024-06-26T00:00:00Z"` |
+| `greater_than` | Greater than or equal (numeric) | `"1000"` |
+| `less_than` | Less than or equal (numeric) | `"5000"` |
+| `between` | Numeric range (comma-separated) | `"1000,5000"` |
+| `between_datetime` | Datetime range (comma-separated ISO) | `"2024-06-26T00:00:00Z,2024-07-10T23:59:59Z"` |
+| `isnull` | Is null check | `"true"` or `"false"` |
+| `today` | Matches today's date | *(any value)* |
+| `exclude` | Exclude exact match | `"booked"` |
+| `exclude_in` | Exclude all in list | `["booked","dispatched"]` |
+
+### Examples
+
+**Filter by status:**
+```
+?filter=[{"column":"status","value":"booked","contains":"is"}]
 ```
 
-Contains can be: "between", "before" or "after".
+**Filter by delivery datetime range:**
+```
+?filter=[{"column":"delivery_time","value":"2024-06-26T00:00:00.000Z,2024-07-10T23:59:59.000Z","contains":"between_datetime"}]
+```
 
-When it is "between", it returns loads in this datetime range.
+**Filter after a date:**
+```
+?filter=[{"column":"delivery_time","value":"2024-06-26T00:00:00.000Z","contains":"after"}]
+```
 
-When it is "after", it returns loads after this datetime.
+**Combine multiple filters:**
+```
+?filter=[{"column":"status","value":"booked","contains":"is"},{"column":"load_pay","value":"1000,5000","contains":"between"}]
+```
 
-When it is "before", it returns loads before this datetime.
+## Ordering
 
-For "before" and "after" the query parameter should be as following:
+Use the `ordering` query parameter with an ORM field path. Prefix with `-` for descending order.
 
-```json
-https://{company_name}.datatruck.io/api/v1/openapi/orders/?filter=[{"contains":"after","column":"delivery_time","value":"2024-06-26T00:00:00.000Z"}]
+```
+?ordering=-created_datetime
+?ordering=load_pay
 ```
